@@ -29,4 +29,29 @@ class Mymodule extends Module // Pour créér un module, il faut obligatoirement
             $this->warning = $this->l('No name provided');
         }
     }
+
+    public function install()
+    {
+        /**
+         * vérifie si la fonction multistore est activée et si c'est le cas, attribue le context actuel a tous les magasins de cette installation de PS
+         */
+        if (Shop::isFeatureActive()) {
+            Shop::setContext(Shop::CONTEXT_ALL);
+        }
+
+        /**
+         * Vérifie si le module parent est installé
+         * vérifie si le module peut être attaché au hook colonne de gauche
+         * vérifie si le module peut être attaché au hook header
+         * créé la configuration MYMODULE_NAME et lui attibue la valeur "my friend"
+         */
+        if (!parent::install() ||
+            !$this->registerHook('leftColumn') ||
+            !$this->registerHook('header') ||
+            !Configuration::updateValue('MYMODULE_NAME', 'my friend')
+            ) {
+            return false;
+        }
+        return true;
+    }
 }
