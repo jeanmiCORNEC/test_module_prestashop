@@ -20,8 +20,8 @@ class Mymodule extends Module // Pour créér un module, il faut obligatoirement
 
         parent::__construct();
 
-        $this->displayName = $this->l('My module');
-        $this->description = $this->l('Description of my module.');
+        $this->displayName = $this->l('my test module');
+        $this->description = $this->l('My module created for testing prestashop module creation.');
 
         $this->confirmUninstall = $this->l('Are you sure you want to uninstall ?');
 
