@@ -3,7 +3,11 @@ if (!defined('_PS_VERSION_')) {
     exit; // On vérifie si la constante numéro de version de Ps est définit pour empécher l'accés direct au module
 }
 
-class Mymodule extends Module // Pour créér un module, il faut obligatoirement 3 méthodes, construct install et uninstall
+use PrestaShop\PrestaShop\Core\Module\WidgetInterface; // On rend le module compatible avec les widgets
+
+// Pour créér un module, il faut obligatoirement 3 méthodes, construct install et uninstall
+
+class Mymodule extends Module implements WidgetInterface
 {
     public function __construct()
     {
@@ -53,5 +57,37 @@ class Mymodule extends Module // Pour créér un module, il faut obligatoirement
             return false;
         }
         return true;
+    }
+
+    /**
+     * @throws  PrestaShopException
+     *
+     * @return bool
+     */
+    public function uninstall()
+    {
+        if (!parent::uninstall() || // ici on fait l'inverse de l'install, si on a créé une table ds la bdd on l'enleve, si on a créé des dossiers on les enleves etc
+
+            !Configuration::deleteByName('MYMODULE_NAME')
+            ) {
+            return false;
+        }
+        return true;
+    }
+    // {widget name="mymodule"}
+    public function hookHeader($params) // mêthode qui  va être "accochée" sur le hook header
+    {
+        return "hello from " . $this->name;
+        Hook::coreRenderWidget("mymodule", "header", $params);
+    }
+
+    // Hook::exec("mymodule");
+    public function renderWidget($hookName, array $configuration)
+    {
+        return "hello from a widget";
+    }
+
+    public function getWidgetVariables($hookName, array $configuration)
+    {
     }
 }
